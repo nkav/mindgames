@@ -20,19 +20,18 @@ def data(num):
           fftdata2.append(values[2])
           fftdata3.append(values[3])
           firstfound = True
+          yield values
     except:
       pass 
   ### Continue collecting sampled data
-  for n in xrange(num):
-    line = ser.readline() 
-    try:
-      values = [float(i) for i in line.rstrip('\r\n').split(',')]
-      if(len(values) == 4):
-        times.append(values[0])
-        fftdata1.append(values[1])
-        fftdata2.append(values[2])
-        fftdata3.append(values[3])
-    except:
-      pass
-  ser.close()
-  return [times, fftdata1, fftdata2, fftdata3] 
+  try:
+    for n in xrange(num+10):
+      line = ser.readline() 
+      try:
+        values = [float(i) for i in line.rstrip('\r\n').split(',')]
+        if(len(values) == 4):
+          yield values
+      except:
+        pass
+  except GeneratorExit:
+    pass
