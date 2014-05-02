@@ -1,12 +1,14 @@
 import serial
 import sys
 
+SERIAL_PORT = '/dev/tty.usbmodem1412'
+
 def data():
   times = []
   fftdata1 = []
   fftdata2 = []
   fftdata3 = []
-  ser = serial.Serial('/dev/tty.usbmodem1412')
+  ser = serial.Serial(SERIAL_PORT)
   ### Continue collecting sampled data
   start = False
   while not start: 
