@@ -5,6 +5,7 @@ Nilesh Kavthekar (github.com/nkav)
 
 import re
 import time as tm
+import random
 
 from numpy import fft
 import numpy as np
@@ -16,6 +17,8 @@ import matplotlib.animation as animation
 from matplotlib import gridspec
 
 from realtime import data 
+
+alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
 def realfft(sampledata):
   return np.absolute(fft.rfft(sampledata))
@@ -74,6 +77,7 @@ def cleanupdata():
     l.remove()
 
 def p300():
+  global learningperiod
   datasize = len(sampledata[0])
   timestep = (sampledata[0][-1] - sampledata[0][0])/datasize
   beg250 = int(.25 / timestep)
@@ -82,8 +86,33 @@ def p300():
   end700 = int(.70 / timestep)
   targetmean = np.mean(sampledata[1][beg250:end450])
   baselinemean = np.mean(sampledata[1][beg600:end700])
-  print "The p300 value for this period was %f." % (targetmean - baselinemean)
+  newdatapoint = abs(float(targetmean - baselinemean))
+  if learningperiod > 0:
+    print 'Still learning...'
+    pdata.append(newdatapoint)
+    learningperiod -= 1
+  elif learningperiod == 0:
+    pdata.append(newdatapoint)
+    print 'Think of a letter... any letter (from A to G)'
+    tm.sleep(4)
+    index = random.randint(0, 6)
+    print 'Was it %s???? Lets see...' % alphabet[index] 
+    learningperiod -= 1
+  else:
+    if newdatapoint > (np.mean(pdata) + np.std(pdata)):
+      print 'We guessed right! You had a significant evoked response!' 
+    else:
+      pdata.append(newdatapoint)
+      print 'Nope... doesnt look like it was. Were still learning!'
+    print ' '
+    print 'Think of a new letter... any letter (from A to G)'
+    tm.sleep(2)
+    index = random.randint(0, 6)
+    print 'Was it %s???? Lets see...' % alphabet[index] 
+  return pdata
  
+pdata = []
+
 if __name__ == '__main__':
   plt.ion()
   fig1 = plt.figure()
@@ -91,12 +120,16 @@ if __name__ == '__main__':
   setupallaxes()
   fig1.tight_layout()
   plt.draw()
+  learningperiod = 5
   while(1):
-    sampledata = data() 
-    adjustaxistimes()
-    l13 = setupdatalines()
-    l4 = setupfftline() 
-    p300()
-    fig1.tight_layout()
-    plt.draw()
-    cleanupdata()
+    try:
+      sampledata = data() 
+      adjustaxistimes()
+      l13 = setupdatalines()
+      l4 = setupfftline() 
+      pdata = p300()
+      fig1.tight_layout()
+      plt.draw()
+      cleanupdata()
+    except:
+      continue 
