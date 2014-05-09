@@ -16,12 +16,14 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import gridspec
 from matplotlib.mlab import PCA
-from mpl_toolkits.mplot3d import Axes3D
 
 from realtime import data 
 import game
 
 alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+random.shuffle(alphabet)
+
+alphabetindex = 0
 
 def realfft(sampledata):
   return np.absolute(fft.rfft(sampledata))
@@ -107,8 +109,10 @@ def cleanupdata():
   l7.remove()
 
 def guessnewletter():
-  index = random.randint(0, 6)
-  return alphabet[index] 
+  global alphabetindex
+  alphabetindex += 1
+  alphabetindex %= 7
+  return alphabet[alphabetindex] 
 
 def p300(guessletter):
   global learningperiod
@@ -132,6 +136,7 @@ def p300(guessletter):
   else:
     if newdatapoint > (np.mean(pdata) + np.std(pdata)):
       game.addlinetk('We guessed right! You had a significant evoked response!')
+      game.writeletter(guessletter)
       game.addlinetk('Now think of a new letter...')
       tm.sleep(5)
     else:
@@ -152,7 +157,7 @@ if __name__ == '__main__':
   setupallaxes()
   fig1.tight_layout()
   plt.draw()
-  learningperiod = 5
+  learningperiod = 15
   while(1):
     try:
       lettertoprint = None
@@ -160,7 +165,9 @@ if __name__ == '__main__':
         game.writetk("Think of a letter (anything from A -> G)")
         lettertoprint = guessnewletter()
         tm.sleep(5)
-        learningperiod0 = 'Was it ' + lettertoprint + '???? Lets see...'
+        game.inlinetk("Was it... ")
+        tm.sleep(1)
+        learningperiod0 = lettertoprint*5 + '???? Lets see...'
         game.addlinetk(learningperiod0)
       sampledata = data() 
       adjustaxistimes()
