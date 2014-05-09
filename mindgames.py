@@ -94,7 +94,7 @@ def p300():
   elif learningperiod == 0:
     pdata.append(newdatapoint)
     print 'Think of a letter... any letter (from A to G)'
-    tm.sleep(4)
+#     tm.sleep(4)
     index = random.randint(0, 6)
     print 'Was it %s???? Lets see...' % alphabet[index] 
     learningperiod -= 1
@@ -106,7 +106,7 @@ def p300():
       print 'Nope... doesnt look like it was. Were still learning!'
     print ' '
     print 'Think of a new letter... any letter (from A to G)'
-    tm.sleep(2)
+#     tm.sleep(2)
     index = random.randint(0, 6)
     print 'Was it %s???? Lets see...' % alphabet[index] 
   return pdata
@@ -116,6 +116,8 @@ pdata = []
 if __name__ == '__main__':
   plt.ion()
   fig1 = plt.figure()
+  mng = plt.get_current_fig_manager()
+  mng.window.state('zoomed')
   ax1,ax2,ax3,ax4 = setupgrid()
   setupallaxes()
   fig1.tight_layout()
@@ -123,7 +125,6 @@ if __name__ == '__main__':
   learningperiod = 5
   while(1):
     try:
-      print "got here"
       sampledata = data() 
       adjustaxistimes()
       l13 = setupdatalines()

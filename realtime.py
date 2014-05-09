@@ -5,6 +5,7 @@ SERIAL_PORT = '/dev/tty.usbmodem1412'
 
 def data():
   ser = serial.Serial(SERIAL_PORT)
+  ser.baudrate = 921600 
   ser.flush()
   ser.write("s")
   times = []
