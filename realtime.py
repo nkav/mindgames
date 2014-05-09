@@ -5,23 +5,13 @@ SERIAL_PORT = '/dev/tty.usbmodem1412'
 
 def data():
   ser = serial.Serial(SERIAL_PORT)
-  ser.readline()
   ser.flush()
-  start = False
-  while not start: 
-    line = ser.readline() 
-    print "Stuck waiting for start"
-    if line.rstrip('\r\n') == 'start!':
-      print "Line is start!"
-      start = True
-    else:
-      print line
+  ser.write("s")
   times = []
   fftdata1 = []
   fftdata2 = []
   fftdata3 = []
   ### Continue collecting sampled data
-  ser.flush()
   try:
     line = ser.readline() 
     t = [float(i) for i in line.rstrip('\r\n').split(',')]
