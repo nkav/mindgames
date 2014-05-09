@@ -14,6 +14,7 @@ def data():
   fftdata3 = []
   ### Continue collecting sampled data
   try:
+#     print "A"
     line = ser.readline() 
     t = [float(i) for i in line.rstrip('\r\n').split(',')]
     line = ser.readline() 
