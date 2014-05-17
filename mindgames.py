@@ -157,7 +157,7 @@ if __name__ == '__main__':
   setupallaxes()
   fig1.tight_layout()
   plt.draw()
-  learningperiod = 15
+  learningperiod = 15 
   while(1):
     try:
       lettertoprint = None
